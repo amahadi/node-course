@@ -1,6 +1,9 @@
 /*
 * Modules and require() demo --> 6.js
 * */
-let counter = require('./6');
+let calc = require('./6');
 
-console.log(counter.printCounter([1, 2, 3]));
+console.log(calc.sum(3, 2));
+console.log(calc.sub(3, 2));
+console.log(calc.mul(3, 2));
+console.log(calc.div(3, 2));

@@ -8,7 +8,19 @@ let count = function(arr){
 
 
 module.exports = {
-    printCounter: function(arr){
-        return 'this array has ' + count(arr) + ' elements';
+    sum: function(a, b){
+      return a + b;
+    },
+
+    sub: function(a, b){
+        return a - b;
+    },
+
+    mul: function(a, b){
+        return a * b;
+    },
+
+    div: function(a, b){
+        return a / b;
     }
 };
