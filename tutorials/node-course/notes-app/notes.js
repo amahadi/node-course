@@ -21,7 +21,7 @@ const addNote = (title, body) => {
 
     const duplicateNote = notes.find((note) => note.title === title);
 
-    if(!duplicateNotes){
+    if(!duplicateNote){
         notes.push({
             title: title,
             body: body
