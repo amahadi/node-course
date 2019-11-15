@@ -27,9 +27,29 @@ const create = (req, res) => {
     });
 }
 
+const update = (req, res) => {
+    const _id = req.params.id;
+    const task = Task.findByIdAndUpdate(_id, res.body).then((task) => {
+        res.send({code: 200, meaasge: 'success', task});
+    }).catch((e) => {
+        res.status(e.code).send({code: e.code, message: e.message});
+    });
+}
+
+const destroy = (req, res) => {
+    const _id = req.params.id;
+    const task = Task.findByIdAndDelete(_id).then((task) => {
+        res.send({code: 200, message: 'success', task});
+    }).catch((e) => {
+        res.status(e.code).send({code: e.code, message: e.message})
+    });
+}
+
 
 module.exports = {
     index: index, 
     show: show,
-    create: create
+    create: create,
+    update: update,
+    destroy: destroy
 }

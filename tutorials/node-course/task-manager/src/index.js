@@ -15,5 +15,7 @@ app.post('/users', (req, res) => { user.create(req, res); });
 app.get('/tasks', (req, res) => { task.index(res); });
 app.get('/tasks/:id', (req, res) => { task.show(req, res); });
 app.post('/tasks', (req, res) => { task.create(req, res); });
+app.put('/tasks/', (req, res) => { task.update(req, res); });
+app.delete('tasks/:id', (req, res) => { task.destroy(req, res); });
 
 app.listen(port, () => { console.log('Listening on ' + port); });
