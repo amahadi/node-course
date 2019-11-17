@@ -1,50 +1,59 @@
 const Task = require('../models/task_model');
+const codes = require('../utils/response_codes')
 
-const index = (res) => {
-    Task.find({}).then((tasks) => {
-        res.send({ code: 200, message: 'success', tasks });
-    }).catch((e) => {
-        res.status(500).send({ code: 500, message: e.message });
-    });
+const index = async (res) => {
+    try{
+        tasks = await Task.find({});
+        res.send({status: codes._200, tasks});
+    } catch(e){ res.status(500).send({status: codes._500}); }
 }
 
-const show = (req, res) => {
+const show = async (req, res) => {
     const _id = req.params.id;
-    Task.findById(_id).then((task) => {
-        if(!task) { return res.status(404).send({ code: 404, message: 'not found'}); }
-        res.send({ code: 200, message: 'success', task });
-    }).catch((e) => {
-        res.status(500).send({ code: 500, message: e.message });
-    }); 
+    try{
+        task = await Task.findById(_id);
+        if(!task) { return res.status(404).send({status: codes._404}); }
+        res.send({status: codes._200, task});
+    } catch(e){
+        res.status(500).send({status: codes._500});
+    }
 }
 
-const create = (req, res) => {
+const create = async (req, res) => {
     const task = new Task(req.body);
-    task.save().then(() => {
-        res.status(200).send({ code: 200, message: 'success', task });
-    }).catch((e) => {
-        res.status(400).send({ code: 400, message: e.message });
-    });
+    try{
+        await task.save();
+        res.status(200).send({status: codes._200, task});
+    } catch(e){
+        res.status(400).send({status: codes._400});
+    }
 }
 
-const update = (req, res) => {
-    const _id = req.params.id;
-    const task = Task.findByIdAndUpdate(_id, res.body).then((task) => {
-        res.send({code: 200, meaasge: 'success', task});
-    }).catch((e) => {
-        res.status(e.code).send({code: e.code, message: e.message});
-    });
+const update = async (req, res) => {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ['description', 'completed'];
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+    if (!isValidOperation){
+        return res.status(400).send({status: codes._400});
+    }
+    try{
+        task = await Task.findByIdAndUpdate(req.params.id, req.body , { new: true, runValidators: true });
+        if(!task) { return res.status(404).send({status: codes._404}); }
+        res.send({status: codes._200, task});
+    } catch(e){
+        res.status(500).send({status: codes._500});
+    }
 }
 
-const destroy = (req, res) => {
-    const _id = req.params.id;
-    const task = Task.findByIdAndDelete(_id).then((task) => {
-        res.send({code: 200, message: 'success', task});
-    }).catch((e) => {
-        res.status(e.code).send({code: e.code, message: e.message})
-    });
+const destroy = async (req, res) => {
+    try{
+        task = await Task.findByIdAndDelete(req.params.id);
+        if(!task) { return res.status(404).send({status: codes._404}); }
+        res.send({ status: codes._200, task });
+    } catch(e){
+        res.status(e.code).send({status: codes._500})
+    }
 }
-
 
 module.exports = {
     index: index, 
