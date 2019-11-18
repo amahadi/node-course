@@ -37,8 +37,11 @@ const update = async (req, res) => {
         return res.status(400).send({status: codes._400});
     }
     try{
-        task = await Task.findByIdAndUpdate(req.params.id, req.body , { new: true, runValidators: true });
+        const task = await Task.findById(req.params.id);
+        // task = await Task.findByIdAndUpdate(req.params.id, req.body , { new: true, runValidators: true });
         if(!task) { return res.status(404).send({status: codes._404}); }
+        updates.forEach((update) => task[update] = req.body[update]);
+        await task.save();
         res.send({status: codes._200, task});
     } catch(e){
         res.status(500).send({status: codes._500});
