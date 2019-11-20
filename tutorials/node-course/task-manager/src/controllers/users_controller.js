@@ -1,5 +1,6 @@
 const User = require('../models/user_model');
 const codes = require('../utils/response_codes')
+const responseBuilder = require('../utils/response_builder')
 
 const index = async (res) => {
     try{
@@ -60,10 +61,21 @@ const destroy = async (req, res) => {
     }
 }
 
+const login = async (req, res) => {
+    try {
+        const user = await User.findByCredentials(req.body.email, req.body.password);
+        const token = 
+        res.send(user);
+    } catch(e) {
+        res.send(responseBuilder(e.message));
+    }
+}
+
 module.exports = {
     index: index,
     show: show,
     create: create,
     update: update,
-    destroy: destroy
+    destroy: destroy,
+    login: login
 }
