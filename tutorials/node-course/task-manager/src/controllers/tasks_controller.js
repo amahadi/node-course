@@ -1,17 +1,17 @@
 const Task = require('../models/task_model');
 const responseBuilder = require('../utils/response_builder');
 
-const index = async (res) => {
+const index = async (req, res) => {
     try{
-        tasks = await Task.find({});
-        res.send({status: responseBuilder(200), tasks});
-    } catch(e){ res.status(500).send({status: responseBuilder(500)}); }
+        await req.user.populate('tasks').execPopulate();
+        res.send({status: responseBuilder(200), tasks: req.user.tasks});
+    } catch(e){ res.status(500).send({status: responseBuilder(500), additionalMessage: e.message}); }
 }
 
 const show = async (req, res) => {
     const _id = req.params.id;
     try{
-        task = await Task.findById(_id);
+        task = await Task.findOne({ _id, owner: req.user._id });
         if(!task) { return res.status(404).send({status: responseBuilder(404)}); }
         res.send({status: responseBuilder(200), task});
     } catch(e){
@@ -20,7 +20,10 @@ const show = async (req, res) => {
 }
 
 const create = async (req, res) => {
-    const task = new Task(req.body);
+    const task = new Task({
+        ...req.body,
+        owner: req.user._id
+    });
     try{
         await task.save();
         res.status(200).send({status: responseBuilder(200), task});
@@ -37,7 +40,7 @@ const update = async (req, res) => {
         return res.status(400).send({status: responseBuilder(400)});
     }
     try{
-        const task = await Task.findById(req.params.id);
+        const task = await Task.findOne({ _id: req.params.id, owner: req.user._id });
         // task = await Task.findByIdAndUpdate(req.params.id, req.body , { new: true, runValidators: true });
         if(!task) { return res.status(404).send({status: responseBuilder(404)}); }
         updates.forEach((update) => task[update] = req.body[update]);
@@ -50,7 +53,7 @@ const update = async (req, res) => {
 
 const destroy = async (req, res) => {
     try{
-        task = await Task.findByIdAndDelete(req.params.id);
+        task = await Task.findOneAndDelete({_id: req.params.id, owner: req.user.id });
         if(!task) { return res.status(404).send({status: responseBuilder(404)}); }
         res.send({ status: responseBuilder(200), task });
     } catch(e){

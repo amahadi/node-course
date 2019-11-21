@@ -38,3 +38,18 @@ app.listen(port, () => { console.log('Listening on ' + port); });
 // }
 
 // myFunction()
+
+// const Task = require('./models/task_model');
+// const User = require('./models/user_model');
+
+// const main = async () => {
+//     // const task = await Task.findById('5dd5e13ef20fe72b4f933785');
+//     // await task.populate('owner').execPopulate();
+//     // console.log(task.owner);
+
+//     const user = await User.findById('5dd5dfafafcfc6292e39dbd2');
+//     await user.populate('tasks').execPopulate();
+//     console.log(user.tasks);
+// }
+
+// main()

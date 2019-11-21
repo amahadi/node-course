@@ -34,8 +34,9 @@ const create = async (req, res) => {
     const user = new User(req.body);
     try{
         await user.generateAuthToken();
+        token = user.token;
         await user.save();
-        res.status(201).send({status: responseBuilder(201), user, token: req.token });
+        res.status(201).send({status: responseBuilder(201), user, token });
     } catch(e) {
         res.status(400).send({status: responseBuilder(400), message: e.message});
     }
