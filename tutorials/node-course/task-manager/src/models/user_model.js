@@ -41,6 +41,8 @@ const userSchema = new mongoose.Schema({
             require: true
         }
     }]
+}, {
+    timestamps: true
 });
 
 userSchema.virtual('tasks', {
@@ -69,7 +71,7 @@ userSchema.pre('remove', async function(next){
 });
 
 
-userSchema.statics.findByCredentials = async (email, password) => {
+userSchema.statics.findByCredentials = async (email, password) => {     // class method
     user = await User.findOne({ email })
     if(!user){ throw new Error(404); }
     const isMatch = await bcrypt.compare(password, user.password);
@@ -77,7 +79,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
     return user;
 }
 
-userSchema.methods.generateAuthToken = async function() {
+userSchema.methods.generateAuthToken = async function() {       // instance method
     const token = jwt.sign({ _id: this._id.toString() }, 'thisismycourse');
     this.tokens = this.tokens.concat({token});
     this.token = token;
