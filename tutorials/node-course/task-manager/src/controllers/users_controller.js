@@ -101,6 +101,10 @@ const logoutAll = async (req, res) => {
     }
 }
 
+const upload = async (req, res) => {
+    res.send({status: responseBuilder(200)});
+}
+
 module.exports = {
     index: index,
     show: show,
@@ -110,5 +114,6 @@ module.exports = {
     login: login,
     profile: profile,
     logout: logout,
-    logoutAll: logoutAll
+    logoutAll: logoutAll,
+    upload: upload
 }
