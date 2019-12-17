@@ -1,4 +1,0 @@
-/*
-* The node event emitter
-* */
-
