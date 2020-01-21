@@ -101,6 +101,13 @@ const logoutAll = async (req, res) => {
     }
 }
 
+const upload = async (error, req, res, next) => {
+    req.user.avatar = req.file.buffer;
+    await req.user.save();
+    if(error) { res.send({status: responseBuilder(400), additionalMessage: error.message}) }
+    res.send({status: responseBuilder(200)})
+}
+
 module.exports = {
     index: index,
     show: show,
@@ -110,5 +117,6 @@ module.exports = {
     login: login,
     profile: profile,
     logout: logout,
-    logoutAll: logoutAll
+    logoutAll: logoutAll,
+    upload: upload
 }
